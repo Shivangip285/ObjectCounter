@@ -1,5 +1,9 @@
-package com.example.ObjectCounter;
+package com.example.ObjectCounter.service;
 
+import com.example.ObjectCounter.Counter;
+import com.example.ObjectCounter.model.ObjectCount;
+import com.example.ObjectCounter.exception.ObjectFoundException;
+import com.example.ObjectCounter.repository.ObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +23,8 @@ public class ObjectCountService {
     }
 
     public Optional<ObjectCount> getObjectById(int id) {
-      return  Optional.ofNullable(objectRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Counter not found for this id")));
+        Optional<ObjectCount> byId = objectRepository.findById(id);
+        return  Optional.ofNullable(byId.orElseThrow(() -> new NoSuchElementException("Counter not found for this id")));
     }
 
     public List<ObjectCount> getAllObjectCounter() {
@@ -33,22 +38,28 @@ public class ObjectCountService {
     public ObjectCount createObjectCount(ObjectCount objectCount1) throws InstantiationException {
 
         if(objectRepository.findByObjectName(objectCount1.getObjectName()).size()!=0) {
-            throw new InstantiationException();
+            throw new InstantiationException("Object already present");
         }
         objectRepository.save(objectCount1);
         return objectCount1;
     }
 
-    public ObjectCount incrementObjectCount(@PathVariable(value="id") Integer id ){
+    public ObjectCount incrementObjectCount(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         Optional<ObjectCount> byId = objectRepository.findById(id);
+        if(byId.isEmpty()){
+            throw new ObjectFoundException("Object not found");
+        }
         int countValue = counter.incrementCountValue(byId.get().getCount());
         byId.get().setCount(countValue);
         objectRepository.save(byId.get());
         return byId.get();
     }
 
-    public ObjectCount decrementObjectCount(@PathVariable(value="id") Integer id ){
+    public ObjectCount decrementObjectCount(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         Optional<ObjectCount> byId = objectRepository.findById(id);
+        if(byId.isEmpty()){
+            throw new ObjectFoundException("Object not found");
+        }
         int countValue = counter.decrementCountValue(byId.get().getCount());
         byId.get().setCount(countValue);
         objectRepository.save(byId.get());

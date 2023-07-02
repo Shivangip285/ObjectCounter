@@ -1,4 +1,4 @@
-package com.example.ObjectCounter;
+package com.example.ObjectCounter.model;
 import lombok.Data;
 
 import javax.persistence.*;

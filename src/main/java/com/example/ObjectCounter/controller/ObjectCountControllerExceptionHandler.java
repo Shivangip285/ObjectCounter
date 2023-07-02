@@ -1,5 +1,6 @@
-package com.example.ObjectCounter;
+package com.example.ObjectCounter.controller;
 
+import com.example.ObjectCounter.exception.ObjectFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
