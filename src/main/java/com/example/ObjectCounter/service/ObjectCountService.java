@@ -4,12 +4,14 @@ import com.example.ObjectCounter.model.ObjectCount;
 import com.example.ObjectCounter.exception.ObjectFoundException;
 import com.example.ObjectCounter.repository.ObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ObjectCountService {
@@ -26,7 +28,7 @@ public class ObjectCountService {
     }
 
     public List<ObjectCount> getAllObjectCounter() {
-        List<ObjectCount> byId = objectRepository.findAll();
+        List<ObjectCount> byId = objectRepository.findAllByOrderByCountAsc();
         if(byId.isEmpty()) {
             throw new NoSuchElementException();
         }

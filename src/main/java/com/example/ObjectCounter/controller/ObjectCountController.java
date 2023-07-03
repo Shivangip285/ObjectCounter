@@ -41,7 +41,7 @@ public class ObjectCountController {
                     content = @Content) })
 
     @GetMapping("/getAllCounter")
-    public List<ObjectCount> getAllCounter() {
+    public List<ObjectCount> getAllCounterInAscCountOrder() {
         return objectCountService.getAllObjectCounter();
     }
 
