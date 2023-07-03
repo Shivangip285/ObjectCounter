@@ -1,6 +1,5 @@
 package com.example.ObjectCounter.service;
 
-import com.example.ObjectCounter.Counter;
 import com.example.ObjectCounter.model.ObjectCount;
 import com.example.ObjectCounter.exception.ObjectFoundException;
 import com.example.ObjectCounter.repository.ObjectRepository;
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class ObjectCountService {
     @Autowired
     private final ObjectRepository objectRepository;
-    Counter counter=new Counter();
 
     public ObjectCountService(ObjectRepository objectRepository) {
         this.objectRepository = objectRepository;
@@ -49,8 +47,7 @@ public class ObjectCountService {
         if(byId.isEmpty()){
             throw new ObjectFoundException("Object not found");
         }
-        int countValue = counter.incrementCountValue(byId.get().getCount());
-        byId.get().setCount(countValue);
+        byId.get().setCount(byId.get().getCount()+1);
         objectRepository.save(byId.get());
         return byId.get();
     }
@@ -60,8 +57,7 @@ public class ObjectCountService {
         if(byId.isEmpty()){
             throw new ObjectFoundException("Object not found");
         }
-        int countValue = counter.decrementCountValue(byId.get().getCount());
-        byId.get().setCount(countValue);
+        byId.get().setCount(byId.get().getCount());
         objectRepository.save(byId.get());
         return byId.get();
     }

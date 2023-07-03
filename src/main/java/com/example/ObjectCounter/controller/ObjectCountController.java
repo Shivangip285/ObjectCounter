@@ -1,9 +1,8 @@
 package com.example.ObjectCounter.controller;
 
-import com.example.ObjectCounter.Counter;
+import com.example.ObjectCounter.exception.ObjectFoundException;
 import com.example.ObjectCounter.model.ObjectCount;
 import com.example.ObjectCounter.service.ObjectCountService;
-import com.example.ObjectCounter.exception.ObjectFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +34,7 @@ public class ObjectCountController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the object",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Counter.class)) }),
+                            schema = @Schema(implementation = ObjectCount.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid object",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "No object found",
