@@ -15,3 +15,5 @@ public interface ObjectRepository extends JpaRepository<ObjectCount, Integer>{
 
   List<ObjectCount> findAllByOrderByCountAsc();
 }
+//external database
+//mocking database in test

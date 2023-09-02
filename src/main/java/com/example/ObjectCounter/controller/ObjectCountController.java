@@ -1,6 +1,6 @@
 package com.example.ObjectCounter.controller;
 
-import com.example.ObjectCounter.Dto.ObjectCountDto;
+import com.example.ObjectCounter.dto.ObjectCountDto;
 import com.example.ObjectCounter.exception.ObjectFoundException;
 import com.example.ObjectCounter.model.ObjectCount;
 import com.example.ObjectCounter.service.ObjectCountService;
@@ -46,12 +46,12 @@ public class ObjectCountController {
         return objectCountService.getAllObjectCounter();
     }
 
-
+//swagger dependency install-https://springdoc.org/#plugins
     @PostMapping("/createCount")
     public ResponseEntity<ObjectCountDto> createCount(@Valid @RequestBody ObjectCount objectCount1) throws InstantiationException {
         return ResponseEntity.ok().body(objectCountService.createObjectCount(objectCount1));
     }
-
+//Dto- requestbody object and return should not be same
     @PutMapping("/incrementCount/{id}")
     public ResponseEntity<ObjectCountDto> incrementCount(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         return ResponseEntity.ok().body(objectCountService.incrementObjectCount(id));
