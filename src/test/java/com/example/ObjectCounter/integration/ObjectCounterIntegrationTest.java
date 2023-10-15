@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.EmptyStackException;
 import java.util.Map;
@@ -54,7 +55,7 @@ class ObjectCounterIntegrationTest {
         objectRepository.save(objectCount);
 
         mockMvc
-                .perform(get("/getCount/"+objectCount.getId()))
+                .perform(get("/counter/"+objectCount.getId()))
                 .andExpect(status().is(200));
     }
 
@@ -63,7 +64,7 @@ class ObjectCounterIntegrationTest {
         int objectId=1;
 
         mockMvc
-                .perform(get("/getCount/" + objectId))
+                .perform(get("/counter/" + objectId))
                 .andExpect(status().is4xxClientError())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoSuchElementException));
     }
@@ -74,7 +75,7 @@ class ObjectCounterIntegrationTest {
         objectRepository.save(objectCount);
 
         mockMvc
-                .perform(get("/getAllCounter"))
+                .perform(get("/counters"))
                 .andExpect(status().is(200));
     }
 
@@ -82,7 +83,7 @@ class ObjectCounterIntegrationTest {
     void shouldThrowExceptionWhenObjectNotPresentForGetAllCounterApi() throws Exception {
 
        mockMvc
-                .perform(get("/getAllCounter/"))
+                .perform(get("/counters/"))
                 .andExpect(status().is4xxClientError())
        .andExpect(result -> assertTrue(result.getResolvedException() instanceof EmptyStackException));
     }
@@ -94,7 +95,7 @@ class ObjectCounterIntegrationTest {
 
 
         mockMvc
-                .perform(post("/createCount")
+                .perform(post("/counter")
                         .content(new ObjectMapper().writeValueAsString(objectCount))
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
@@ -105,11 +106,13 @@ class ObjectCounterIntegrationTest {
         ObjectCount objectCount = ObjectCount.builder().objectName("Buildings").count(5).build();
         objectRepository.save(objectCount);
 
-        mockMvc
-                .perform(post("/createCount")
-                .content(new ObjectMapper().writeValueAsString(objectCount))
-                .contentType(APPLICATION_JSON_VALUE)).andExpect(status().is4xxClientError());
-               //.andExpect(result -> assertTrue(result.getResolvedException().getCause() instanceof InstantiationException));
+        ResultActions resultActions = mockMvc
+                .perform(post("/counter")
+                        .content(new ObjectMapper().writeValueAsString(objectCount))
+                        .contentType(APPLICATION_JSON_VALUE)).andExpect(status().is4xxClientError());
+        //resultActions--
+
+        //.andExpect(result -> assertTrue(result.getResolvedException().getCause() instanceof InstantiationException));
     }
     @Test
     void shouldReturnBadRequestWhenRequestBodyIsInvalidForCreateCountApi() throws Exception {
@@ -117,7 +120,7 @@ class ObjectCounterIntegrationTest {
         ObjectCountDto objectCountDto = ObjectCountDto.builder().objectName("Buildings").count(5).build();
 
         mockMvc
-                .perform(post("/createCount")
+                .perform(post("/counter")
                         .content(new ObjectMapper().writeValueAsString(objectCount))
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
     }
@@ -129,7 +132,7 @@ class ObjectCounterIntegrationTest {
         ObjectCountDto objectCountDto = ObjectCountDto.builder().objectName("Buildings").count(6).build();
 
         mockMvc
-                .perform(put("/incrementCount/"+objectCount.getId())
+                .perform(put("/counter/"+objectCount.getId()+"/increment")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
     }
@@ -139,7 +142,7 @@ class ObjectCounterIntegrationTest {
         int objectId=1;
 
        mockMvc
-                .perform(put("/incrementCount/" + objectId)
+                .perform(put("/counter/" + objectId+"/increment")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().is4xxClientError())
                .andExpect(result -> assertTrue(result.getResolvedException().getCause() instanceof ObjectFoundException))
                .andExpect(result -> assertTrue(result.getResolvedException().getCause().getMessage().equals("Object not found")));
@@ -151,7 +154,7 @@ class ObjectCounterIntegrationTest {
         objectRepository.save(objectCount);
 
      mockMvc
-                .perform(put("/decrementCount/" + objectCount.getId())
+                .perform(put("/counter/" + objectCount.getId()+"/decrement")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
              .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
     }
@@ -161,7 +164,7 @@ class ObjectCounterIntegrationTest {
         int objectId=1;
 
         mockMvc
-                .perform(put("/decrementCount/" + objectId)
+                .perform(put("/counter/" + objectId+"/decrement")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().is4xxClientError())
                  .andExpect(result -> assertTrue(result.getResolvedException().getCause() instanceof ObjectFoundException))
                 .andExpect(result -> assertTrue(result.getResolvedException().getCause().getMessage().equals("Object not found")));
@@ -172,7 +175,7 @@ class ObjectCounterIntegrationTest {
         objectRepository.save(objectCount);
 
         mockMvc
-                .perform(delete("/deleteCounter/"+objectCount.getId())
+                .perform(delete("/counter/"+objectCount.getId())
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk());
                 //.andExpect(content().string(new ObjectMapper().writeValueAsString(modelMapper.map(objectCount, ObjectCountDto.class))));
     }
@@ -182,7 +185,7 @@ class ObjectCounterIntegrationTest {
         int objectId=1;
 
         mockMvc
-                .perform(delete("/deleteCounter/" + objectId)
+                .perform(delete("/counter/" + objectId)
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().is4xxClientError())
         .andExpect(result -> assertTrue(result.getResolvedException().getCause() instanceof ObjectFoundException))
         .andExpect(result -> assertTrue(result.getResolvedException().getCause().getMessage().equals("Object not found")));

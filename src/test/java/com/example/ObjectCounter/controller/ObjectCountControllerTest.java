@@ -39,7 +39,7 @@ class ObjectCountControllerTest {
         when(objectCountService.getObjectById(objectId)).thenReturn(objectCountDto);
 
         mockMvc
-                .perform(get("/getCount/"+objectId))
+                .perform(get("/counter/"+objectId))
                 .andExpect(status().is(200));
     }
 
@@ -49,7 +49,7 @@ class ObjectCountControllerTest {
         when(objectCountService.getAllObjectCounter()).thenReturn(objectCountDto);
 
         mockMvc
-                .perform(get("/getAllCounter"))
+                .perform(get("/counters"))
                 .andExpect(status().is(200));
     }
 
@@ -58,12 +58,8 @@ class ObjectCountControllerTest {
         ObjectCount objectCount = ObjectCount.builder().objectName("Buildings").count(5).build();
         ObjectCountDto objectCountDto = ObjectCountDto.builder().objectName("Buildings").count(5).build();
         when(objectCountService.createObjectCount(objectCount)).thenReturn(objectCountDto);
-       Map<String, String> a=new HashMap<>();
-       a.put("a","b");
-       a.put("a","c");
-        System.out.println(new Locale("frCA").toLanguageTag());
         mockMvc
-                .perform(post("/createCount")
+                .perform(post("/counter")
                 .content(new ObjectMapper().writeValueAsString(objectCount))
                 .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
@@ -75,7 +71,7 @@ class ObjectCountControllerTest {
         ObjectCountDto objectCountDto = ObjectCountDto.builder().objectName("Buildings").count(5).build();
 
         mockMvc
-                .perform(post("/createCount")
+                .perform(post("/counter")
                         .content(new ObjectMapper().writeValueAsString(objectCount))
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
     }
@@ -88,7 +84,7 @@ class ObjectCountControllerTest {
         when(objectCountService.incrementObjectCount(objectCount.getId())).thenReturn(objectCountDto);
 
         mockMvc
-                .perform(put("/incrementCount/"+objectId)
+                .perform(put("/counter/"+objectId+"/increment")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
     }
@@ -101,7 +97,7 @@ class ObjectCountControllerTest {
         when(objectCountService.decrementObjectCount(objectCount.getId())).thenReturn(objectCountDto);
 
         mockMvc
-                .perform(put("/decrementCount/"+objectId)
+                .perform(put("/counter/"+objectId+"/decrement")
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
     }
@@ -114,7 +110,7 @@ class ObjectCountControllerTest {
         when(objectCountService.deleteObjectCounter(objectCount.getId())).thenReturn(objectCountDto);
 
         mockMvc
-                .perform(delete("/deleteCounter/"+objectId)
+                .perform(delete("/counter/"+objectId)
                         .contentType(APPLICATION_JSON_VALUE)).andExpect(status().isOk())
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(objectCountDto)));
     }

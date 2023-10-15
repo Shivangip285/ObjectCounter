@@ -26,7 +26,7 @@ public class ObjectCountController {
         this.objectCountService = objectCountService;
     }
 
-    @GetMapping("/getCount/{id}")
+    @GetMapping("/counter/{id}")
     public ResponseEntity<ObjectCountDto> getCount(@PathVariable (value = "id") Integer id) {
         return ResponseEntity.ok().body(objectCountService.getObjectById(id).get());
     }
@@ -41,26 +41,26 @@ public class ObjectCountController {
             @ApiResponse(responseCode = "404", description = "No object found",
                     content = @Content) })
 
-    @GetMapping("/getAllCounter")
+    @GetMapping("/counters")
     public List<ObjectCountDto> getAllCounterInAscCountOrder() {
         return objectCountService.getAllObjectCounter();
     }
 
 //swagger dependency install-https://springdoc.org/#plugins
-    @PostMapping("/createCount")
+    @PostMapping("/counter")
     public ResponseEntity<ObjectCountDto> createCount(@Valid @RequestBody ObjectCount objectCount1) throws InstantiationException {
         return ResponseEntity.ok().body(objectCountService.createObjectCount(objectCount1));
     }
 //Dto- requestbody object and return should not be same
-    @PutMapping("/incrementCount/{id}")
+    @PutMapping("/counter/{id}/increment")//resourcebasedApi -object/id/increment,versioning, controller need not have exception
     public ResponseEntity<ObjectCountDto> incrementCount(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         return ResponseEntity.ok().body(objectCountService.incrementObjectCount(id));
     }
-    @PutMapping("/decrementCount/{id}")
+    @PutMapping("/counter/{id}/decrement")
     public ResponseEntity<ObjectCountDto> decrementCount(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         return ResponseEntity.ok().body(objectCountService.decrementObjectCount(id));
     }
-    @DeleteMapping("/deleteCounter/{id}")
+    @DeleteMapping("/counter/{id}")
     public ResponseEntity<ObjectCountDto> deleteCounter(@PathVariable(value="id") Integer id ) throws ObjectFoundException {
         return ResponseEntity.ok().body(objectCountService.deleteObjectCounter(id));
     }
